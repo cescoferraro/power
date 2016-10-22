@@ -219,7 +219,7 @@ void execCmd(int* data) {
 
     case 105:
       {
-        int bruna = data[1];
+        // int bruna = data[1];
         //        readsensor(bruna);
       }
       break;

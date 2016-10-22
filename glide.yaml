@@ -1,0 +1,10 @@
+package: github.com/cescoferraro/power
+import:
+- package: github.com/gorilla/context
+- package: github.com/gorilla/handlers
+- package: github.com/gorilla/mux
+- package: github.com/spf13/cobra
+- package: github.com/spf13/viper
+- package: github.com/tarm/serial
+- package: github.com/fatih/color
+  version: ^1.0.0

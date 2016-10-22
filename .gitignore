@@ -1,1 +1,7 @@
 .pioenvs/
+JWT
+vendor/
+dist/
+.glide/
+.dobi/
+power

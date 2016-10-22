@@ -1,0 +1,11 @@
+---
+- hosts: dev
+  become: yes
+  become_method: sudo
+  remote_user: root
+  tasks:
+  - name: ensure pip is  installed
+    apt: name=python-pip update_cache=yes
+    register: out
+  - debug: var=out.stdout_lines
+  - pip: name=platformio

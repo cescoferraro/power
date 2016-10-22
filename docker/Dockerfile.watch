@@ -1,0 +1,32 @@
+FROM    golang:1.7-alpine
+
+RUN     apk add -U git bash curl tree
+
+RUN     go get github.com/cespare/reflex && \
+        cp /go/bin/reflex /usr/bin/ && \
+        rm -rf /go/src/* /go/pkg/* /go/bin/*
+
+
+WORKDIR /go/src/github.com/cescoferraro/power
+ENV     PS1="# "
+ENV     CGO_ENABLED=0
+COPY ./ ${SOURCE}
+CMD reflex -r '\.go' -s -- go run power.go runserver --channels=8
+
+
+
+
+
+# Install ngrok
+#WORKDIR /tmp
+#ENV NGROK https://bin.equinox.io/c/4VmDzA7iaHb/
+#ENV VERSION ngrok-stable-linux-amd64.zip
+#RUN curl -o /tmp/ngrok.zip -L ${NGROK}${VERSION}
+#RUN unzip ngrok.zip
+#RUN mv ngrok /usr/local/bin/ngrok
+#RUN chmod +x /usr/local/bin/ngrok
+
+
+
+
+

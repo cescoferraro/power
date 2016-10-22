@@ -1,0 +1,38 @@
+version: '2'
+services:
+  linux:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    image: cescoferraro/power
+    privileged: true
+    network_mode: host
+    ports:
+      - 5000:5000
+    volumes:
+      - ./:/go/src/github.com/cescoferraro/power
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0:rw
+  expose:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    image: cescoferraro/power
+    privileged: true
+    command: go run power.go expose
+    network_mode: host
+    volumes:
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id
+      - ./:/go/src/github.com/cescoferraro/power
+  test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    image: cescoferraro/power
+    privileged: true
+    command: go test -v ./lights
+    network_mode: host
+    volumes:
+      - ./:/go/src/github.com/cescoferraro/power
+
