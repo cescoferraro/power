@@ -1,0 +1,21 @@
+job=deps:
+    use: binary-builder
+    mounts: [source]
+    command: "glide install"
+    sources: ['glide.yaml', 'glide.lock']
+    artifact: vendor/
+    description: "Install go dependencies"
+
+job=fmt:
+    use: binary-builder
+    mounts: [source]
+    command: "ash -c 'go fmt $(glide novendor)'"
+    artifact: vendor/
+    description: "go fmt"
+
+job=lint:
+    use: binary-builder
+    mounts: [source]
+    command: "ls "
+    artifact: vendor/
+    description: "lint go"

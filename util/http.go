@@ -1,15 +1,16 @@
 package util
 
 import (
-	"strconv"
-	"net/http"
 	"github.com/fatih/color"
+	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 	"log"
+	"net/http"
+	"strconv"
 )
 
 func GetBodySize(r *http.Request) int {
-	bodySize, err := strconv.Atoi(r.Header["Content-Length"][0]);
+	bodySize, err := strconv.Atoi(r.Header["Content-Length"][0])
 	if err != nil {
 		LogIfVerbose("Problem with Content-Lenght")
 	}
@@ -17,6 +18,7 @@ func GetBodySize(r *http.Request) int {
 }
 
 type Adapter func(http.Handler) http.Handler
+
 // Adapt h with all specified adapters.
 func Adapt(h http.Handler, adapters ...Adapter) http.Handler {
 	for _, adapter := range adapters {
@@ -32,14 +34,12 @@ func NEWLogIfVerbose(cor color.Attribute, block, logg string) {
 	}
 }
 
-func HttpAssertError(w http.ResponseWriter,r *http.Request, err error, code int, origin string) {
+func HttpAssertError(w http.ResponseWriter, r *http.Request, err error, code int, origin string) {
 	defer r.Body.Close()
 	NEWLogIfVerbose(color.FgBlack, origin, err.Error())
 	http.Error(w, http.StatusText(code), code)
 	return
 }
-
-
 
 func EnableCORS() Adapter {
 	return func(h http.Handler) http.Handler {
@@ -60,3 +60,32 @@ func EnableCORS() Adapter {
 	}
 }
 
+func ValidetaChannel() Adapter {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			channel, err := strconv.Atoi(mux.Vars(r)["channel"])
+			if err != nil {
+				http.Error(w, http.StatusText(400), 400)
+				return
+			}
+			if channel >= 1 && channel <= viper.GetInt("channels") {
+				h.ServeHTTP(w, r)
+				return
+			}
+			http.Error(w, http.StatusText(400), 400)
+
+		})
+	}
+}
+
+func ValidetaAction() Adapter {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if mux.Vars(r)["action"] == "true" || mux.Vars(r)["action"] == "false" {
+				h.ServeHTTP(w, r)
+				return
+			}
+			http.Error(w, http.StatusText(400), 400)
+		})
+	}
+}

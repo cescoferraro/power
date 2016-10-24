@@ -1,1 +1,5 @@
 #!/usr/bin/env bash
+
+exec reflex \
+        -r '\.go' -s -- \
+        go run -ldflags "-X github.com/cescoferraro/power/cmd.jwt=${POWER_JWT}" power.go runserver --channels=8

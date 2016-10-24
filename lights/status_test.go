@@ -2,9 +2,9 @@ package lights_test
 
 import (
 	"github.com/cescoferraro/power/util"
-	"net/http"
-	"log"
 	"github.com/fatih/color"
+	"log"
+	"net/http"
 )
 
 func (t *LightsTests) CurrentStatus() {
@@ -21,4 +21,3 @@ func (t *LightsTests) CurrentStatus() {
 	log.Println(response)
 	util.NEWLogIfVerbose(color.BgCyan, "IOT/USERS/TEST", response)
 }
-

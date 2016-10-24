@@ -2,12 +2,11 @@ package util
 
 import (
 	"github.com/spf13/cobra"
-	"strings"
 	"github.com/spf13/viper"
-	"os"
 	"log"
+	"os"
+	"strings"
 )
-
 
 type Flag struct {
 	Name        string
@@ -16,9 +15,9 @@ type Flag struct {
 	Value       interface{}
 }
 
-type CommandFlag  []Flag
+type CommandFlag []Flag
 
-func (flags CommandFlag) Register(cmd *cobra.Command) *cobra.Command{
+func (flags CommandFlag) Register(cmd *cobra.Command) *cobra.Command {
 	for _, i := range flags {
 		viper.BindEnv(strings.ToUpper(i.Name))
 		switch i.Value.(type) {
@@ -34,12 +33,12 @@ func (flags CommandFlag) Register(cmd *cobra.Command) *cobra.Command{
 	return cmd
 }
 
-func ImposeChannelFlag(){
-	name:= "channels"
+func ImposeChannelFlag() {
+	name := "channels"
 	//exit program if channels do not make sense
 	////TODO: Exit on channels not multiple of 8, and make it work
 	if viper.GetInt(name) == 0 {
-		log.Println( name + " flag is mandatory!")
+		log.Println(name + " flag is mandatory!")
 		os.Exit(0)
 	}
 }

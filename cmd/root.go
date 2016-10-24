@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"github.com/cescoferraro/power/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
 	"os"
-	"github.com/cescoferraro/power/util"
 )
 
 var cfgFile string
@@ -21,7 +21,6 @@ var RootCmd = &cobra.Command{
 		util.LogIfVerbose(jwt)
 
 	},
-
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -44,7 +43,7 @@ func ViperInit() {
 	}
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(".")      // path to look for the config file in
-	err := viper.ReadInConfig() // Find and read the config file
+	err := viper.ReadInConfig()   // Find and read the config file
 	if err != nil {
 		log.Println("Failed to read config", err)
 	}

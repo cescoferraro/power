@@ -1,10 +1,9 @@
 package lights
 
 import (
-	"net/http"
 	"encoding/json"
-	"github.com/cescoferraro/power/models"
 	"github.com/cescoferraro/power/util"
+	"net/http"
 )
 
 type Status struct {
@@ -19,16 +18,16 @@ func StatusHandler(handler http.Handler) *Status {
 
 func (s *Status) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-
-	serial, err :=models.NewSerialDao()
+	serial, err := NewSerialDao()
 	if err != nil {
-		util.HttpAssertError(w, r, err, http.StatusBadRequest, "POWER/STATUS"); return
+		util.HttpAssertError(w, r, err, http.StatusBadRequest, "POWER/STATUS")
+		return
 	}
-
 
 	status, err := serial.CurrentState()
 	if err != nil {
-		util.HttpAssertError(w, r, err, http.StatusBadRequest, "POWER/STATUS"); return
+		util.HttpAssertError(w, r, err, http.StatusBadRequest, "POWER/STATUS")
+		return
 	}
 	go serial.Free()
 
@@ -38,6 +37,3 @@ func (s *Status) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Write(text)
 
 }
-
-
-

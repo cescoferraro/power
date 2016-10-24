@@ -2,12 +2,11 @@ package lights_test
 
 import (
 	"github.com/cescoferraro/power/util"
-	"net/http"
 	"github.com/fatih/color"
+	"net/http"
 )
 
 func (t *LightsTests) HelthEndpoint() {
-
 
 	healthEndpoint := util.TableTest{
 		Method:      "GET",

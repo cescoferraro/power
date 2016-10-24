@@ -1,4 +1,6 @@
 FROM resin/armv7hf-debian
 
-COPY ./dist/bin/power-arm /usr/bin/power
+
+COPY ./dist/bin/power-arm-* /usr/bin/power
+COPY ./dist/bin/ngrok /usr/bin/ngrok
 

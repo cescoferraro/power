@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"bitbucket.org/cescoferraro/api/util"
+	"github.com/cescoferraro/power/util"
 
 	"github.com/spf13/cobra"
 )

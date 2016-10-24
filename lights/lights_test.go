@@ -1,17 +1,17 @@
 package lights_test
 
 import (
-	"testing"
-	"os"
-	"github.com/gorilla/mux"
-	"net/http/httptest"
-	"github.com/cescoferraro/power/util"
-	"github.com/cescoferraro/power/cmd"
 	"flag"
+	"github.com/cescoferraro/power/cmd"
+	"github.com/cescoferraro/power/lights"
+	"github.com/cescoferraro/power/util"
+	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 	"math/rand"
+	"net/http/httptest"
+	"os"
+	"testing"
 	"time"
-	"github.com/cescoferraro/power/lights"
 )
 
 type LightsTests struct{ Test *testing.T }
@@ -49,28 +49,25 @@ func TestRunner(t *testing.T) {
 		test.CurrentStatus()
 	})
 
-	t.Run("A=action", func(t *testing.T) {
-		test := LightsTests{Test: t}
-		all:=  []string{"false","true"}
-		for i := 0; i < 100; i++ {
-			test.ChangeChannel(all[rand.Intn(len(all))], randInt(1,8))
-			time.Sleep(200 * time.Microsecond)
-		}
-		test.ChangeChannelOutOfRange()
-	})
-
 	t.Run("A=read", func(t *testing.T) {
 		test := LightsTests{Test: t}
 		test.ReadChannel(2)
 		test.ReadChannelOutOfRange()
 	})
 
+	t.Run("A=action", func(t *testing.T) {
+		test := LightsTests{Test: t}
+		all := []string{"false", "true"}
+		for i := 0; i < 100; i++ {
+			test.ChangeChannel(all[rand.Intn(len(all))], randInt(1, 8))
+			time.Sleep(200 * time.Microsecond)
+		}
+		test.ChangeChannelOutOfRange()
+		test.ActionOutOfRange()
+	})
 
 }
 
 func randInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
-
-
-

@@ -1,17 +1,17 @@
 package cmd
 
 import (
-	"net/http"
-	"github.com/spf13/viper"
-	"time"
 	"bytes"
-	"io/ioutil"
-	"strconv"
-	"strings"
-	"encoding/json"
-	"log"
 	_ "crypto/sha512"
 	"crypto/tls"
+	"encoding/json"
+	"github.com/spf13/viper"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
 )
 
 func PING() {
@@ -26,7 +26,7 @@ func PING() {
 					switch viper.GetString("ENV") {
 					case "Development":
 						go req(viper.GetString("api"))
-						time.Sleep(30 *time.Second)
+						time.Sleep(30 * time.Second)
 						go req(viper.GetString("dev-api"))
 					default:
 						return
@@ -44,29 +44,27 @@ func PING() {
 
 //StatusResponse is a type
 type Device struct {
-	Hostname string                `json:"hostname"`
-	Alias    string                `json:"alias"`
-	Channels int                `json:"channels"`
-	Owner    string                `json:"owner"`
-	Location map[string]string     `json:"location"`
+	Hostname string            `json:"hostname"`
+	Alias    string            `json:"alias"`
+	Channels int               `json:"channels"`
+	Owner    string            `json:"owner"`
+	Location map[string]string `json:"location"`
 }
 
 func req(url string) {
 
-
 	location := make(map[string]string, viper.GetInt("channels"))
 
 	for k := range make([]int, viper.GetInt("channels")) {
-		location[strconv.Itoa(k + 1)] = "undefined"
+		location[strconv.Itoa(k+1)] = "undefined"
 	}
-
 
 	test := Device{
 		Hostname: viper.GetString("device"),
 		Channels: viper.GetInt("channels"),
-		Owner:viper.GetString("owner"),
-		Alias:"BRANDNEW",
-		Location:location,
+		Owner:    viper.GetString("owner"),
+		Alias:    "BRANDNEW",
+		Location: location,
 	}
 
 	ERRR, _ := json.Marshal(test)
@@ -75,7 +73,7 @@ func req(url string) {
 	req.Header.Set("X-Custom-Header", "myvalue")
 
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 		DisableCompression: true,
 	}
 
@@ -90,11 +88,11 @@ func req(url string) {
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	if strings.Contains(resp.Status, "409") {
-		log.Println("Device", viper.GetString("device"),"has just sent an alive request to", url)
+		log.Println("Device", viper.GetString("device"), "has just sent an alive request to", url)
 
-	}else{
+	} else {
 		log.Println("Device", viper.GetString("device"), "has just registered at", url)
-		log.Println("Response body:> ", body)
+		log.Println("Response body:> ", string(body))
 
 	}
 

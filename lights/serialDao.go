@@ -1,21 +1,21 @@
-package models
+package lights
 
 import (
-	"github.com/tarm/serial"
-	"github.com/spf13/viper"
-	"errors"
-	"time"
-	"bytes"
 	"bufio"
+	"bytes"
+	"errors"
+	"github.com/spf13/viper"
+	"github.com/tarm/serial"
+	"log"
 	"strconv"
 	"sync"
-	"log"
+	"time"
 )
 
 var MUTEX = &sync.Mutex{}
 
 type SerialDao struct {
-	Port  *serial.Port
+	Port *serial.Port
 
 	Mutex *sync.Mutex
 }
@@ -28,7 +28,7 @@ func NewSerialDao() (SerialDao, error) {
 		MUTEX.Unlock()
 		return SerialDao{}, errors.New("Could not fetch Sserial Port")
 	}
-	return SerialDao{Port:port, Mutex:MUTEX}, nil
+	return SerialDao{Port: port, Mutex: MUTEX}, nil
 }
 
 func (serial SerialDao) GetChannel(vars map[string]string) (int, error) {
@@ -44,16 +44,19 @@ func (serial SerialDao) GetChannel(vars map[string]string) (int, error) {
 }
 func (serial SerialDao) GetAcion(vars map[string]string) (string, error) {
 	switch {
-	case vars["action"] == "true": {
-		return strconv.Itoa(255), nil
+	case vars["action"] == "true":
+		{
+			return strconv.Itoa(255), nil
 
-	}
-	case vars["action"] == "false": {
-		return strconv.Itoa(0), nil
-	}
-	default: {
-		return "", errors.New("Buahhhhh!")
-	}
+		}
+	case vars["action"] == "false":
+		{
+			return strconv.Itoa(0), nil
+		}
+	default:
+		{
+			return "", errors.New("Buahhhhh!")
+		}
 	}
 }
 
@@ -63,7 +66,7 @@ func (serial SerialDao) GetReadCommand(vars map[string]string) (string, error) {
 		return "", err
 	}
 	shield := (channel / 8)
-	if channel % 8 != 0 {
+	if channel%8 != 0 {
 		shield++
 	}
 	return "@106," + strconv.Itoa(shield) + ":", nil
@@ -96,7 +99,7 @@ func (serial SerialDao) ReadFromSerial(vars map[string]string) (bool, error) {
 
 	var channel_status []bool
 	for status > 0 {
-		channel_status = append(channel_status, status % 10 == 1)
+		channel_status = append(channel_status, status%10 == 1)
 		status /= 10
 	}
 	for len(channel_status) < 8 {
@@ -105,7 +108,7 @@ func (serial SerialDao) ReadFromSerial(vars map[string]string) (bool, error) {
 
 	index, _ := strconv.Atoi(vars["channels"])
 
-	return channel_status[index % 8], nil
+	return channel_status[index%8], nil
 
 }
 func (serial SerialDao) Free() {
@@ -138,7 +141,7 @@ func (serial SerialDao) CurrentState() (map[string]bool, error) {
 		result, _ := strconv.Atoi(raw)
 
 		for result > 0 {
-			channel = append(channel, result % 10 == 1)
+			channel = append(channel, result%10 == 1)
 			result /= 10
 		}
 		for len(channel) < 8 {
@@ -157,12 +160,8 @@ func (serial SerialDao) CurrentState() (map[string]bool, error) {
 	}
 
 	for index, ele := range channel {
-		status[strconv.Itoa(index + 1)] = ele
+		status[strconv.Itoa(index+1)] = ele
 	}
 
 	return status, nil
 }
-
-
-
-

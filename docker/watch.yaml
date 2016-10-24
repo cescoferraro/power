@@ -9,6 +9,7 @@ job=watch:
     use: watch-builder
     interactive: true
     net-mode: host
+    command: docker/script/watch
     devices:
       - host: /dev/ttyACM0
         container: /dev/ttyACM0
@@ -17,4 +18,5 @@ job=watch:
     mounts: [source,machine-id,device]
     env:
       - "POWER_JWT={env.POWER_JWT:}"
+      - "VERSION={env.VERSION:}"
     description: "Watch for code changes and run the unit tests"

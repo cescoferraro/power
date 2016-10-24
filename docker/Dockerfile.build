@@ -1,4 +1,3 @@
-
 FROM    golang:1.7-alpine
 
 RUN     apk add -U git bash curl tree
@@ -9,9 +8,23 @@ RUN     export GLIDE=v0.12.3; \
         mv linux-amd64/glide /usr/bin/glide && \
         chmod +x /usr/bin/glide
 
+# Install ngrok
+WORKDIR /tmp
+ENV NGROK https://bin.equinox.io/c/4VmDzA7iaHb/
+ENV VERSION ngrok-stable-linux-arm.zip
+RUN curl -o /tmp/ngrok.zip -L ${NGROK}${VERSION}
+RUN unzip ngrok.zip
+RUN mv ngrok /usr/local/bin/ngrok
+RUN chmod +x /usr/local/bin/ngrok
+
 
 RUN     go get github.com/mitchellh/gox && \
         cp /go/bin/gox /usr/bin && \
+        rm -rf /go/src/* /go/pkg/* /go/bin/*
+
+
+RUN     go get github.com/golang/lint/golint && \
+        cp /go/bin/golint /usr/bin && \
         rm -rf /go/src/* /go/pkg/* /go/bin/*
 
 

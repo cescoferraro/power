@@ -7,10 +7,10 @@ import (
 
 	"github.com/fatih/color"
 
-	"net/http"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
-	"fmt"
+	"net/http"
 )
 
 func URL() string {
@@ -23,7 +23,7 @@ var ServerFlag string
 type TableTest struct {
 	Method       string
 	Path         string
-	Jwt  		string
+	Jwt          string
 	Body         io.Reader
 	BodyContains string
 	Status       int
@@ -31,17 +31,14 @@ type TableTest struct {
 	Description  string
 }
 
-
-
 func SetTestServer(server *httptest.Server) {
 	Server = server
 	return
 }
 
-func SpinSingleTableTests( t *testing.T, test TableTest) (string) {
-	NEWLogIfVerbose(color.FgHiBlue, "TEST", "Name: " + test.Name)
-	NEWLogIfVerbose(color.FgHiBlue, "TEST", "Description: " + test.Description)
-
+func SpinSingleTableTests(t *testing.T, test TableTest) string {
+	NEWLogIfVerbose(color.FgHiBlue, "TEST", "Name: "+test.Name)
+	NEWLogIfVerbose(color.FgHiBlue, "TEST", "Description: "+test.Description)
 
 	url := Server.URL + test.Path
 	r, err := http.NewRequest(test.Method, url, test.Body)
@@ -51,7 +48,6 @@ func SpinSingleTableTests( t *testing.T, test TableTest) (string) {
 	}
 
 	r.Header.Set("Authorization", fmt.Sprintf("Bearer %v", test.Jwt))
-
 
 	response, err := http.DefaultClient.Do(r)
 	if err != nil {
@@ -67,7 +63,6 @@ func SpinSingleTableTests( t *testing.T, test TableTest) (string) {
 
 	assert.Contains(t, string(actualBody), test.BodyContains, "body")
 	assert.Equal(t, test.Status, response.StatusCode, "status code")
-
 
 	return string(actualBody)
 }

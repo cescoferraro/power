@@ -1,12 +1,14 @@
 package util
 
 import (
-	"log"
-	"net/http"
+	"github.com/fatih/color"
 	"github.com/spf13/viper"
+	"log"
+	"strings"
+	"sort"
 )
 
-func LogIfVerbose(logg  interface{}) {
+func LogIfVerbose(logg interface{}) {
 	if viper.GetBool("verbose") {
 		log.Println(logg)
 	}
@@ -18,36 +20,15 @@ func RunIfVerbose(logg func()) {
 	}
 }
 
-func PanicIf(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func LogIfError(err error) {
-	if err != nil {
-		log.Println(err)
-	}
-}
-func PrintIf(err error) {
-	if err != nil {
-		log.Println(err)
-	}
-}
-func PrintRequestHeaders(r *http.Request) {
-	for k, v := range r.Header {
-		log.Println("key:", k, "value:", v)
-	}
-}
-
 func PrintViperConfig() {
-
-	// TODO: HANDLE NESTED YAMLS BETTER
 	keys := viper.AllKeys()
+	sort.Strings(keys)
+	yellow := color.New(color.FgYellow).SprintFunc()
+	red := color.New(color.FgRed).SprintFunc()
+	white := color.New(color.FgWhite).SprintFunc()
 	log.Println("***********VIPER*************")
 	for _, key := range keys {
-		log.Println(key + ": " + viper.GetString(key))
-
+		log.Printf("%s %s %s\n", red(strings.ToUpper(key)), yellow(key), white(viper.GetString(key)))
 	}
 	log.Println("*****************************")
 	return

@@ -11,12 +11,5 @@ job=binary:
     command: docker/script/build
     env:
       - "POWER_JWT={env.POWER_JWT:}"
+      - "VERSION={env.VERSION:}"
     description: "Build the ARM static binary"
-
-
-image=release:
-    image: cescoferraro/power
-    tags: ["arm"]
-    context: .
-    dockerfile: docker/Dockerfile.release
-    depends: [binary]
