@@ -1,9 +1,0 @@
-#!/bin/bash
-set -eu
-
-gox \
-    -ldflags "-X github.com/cescoferraro/power/cmd.jwt=$POWER_JWT" \
-    -output="/go/bin/power-{{.Arch}}" \
-    -osarch="linux/arm" -osarch="linux/amd64" \
-    .
-

@@ -1,0 +1,20 @@
+image=watch-builder:
+    image: cescoferraro/power
+    tags: ["watch"]
+    context: .
+    dockerfile: docker/Dockerfile.watch
+
+
+job=watch:
+    use: watch-builder
+    interactive: true
+    net-mode: host
+    devices:
+      - host: /dev/ttyACM0
+        container: /dev/ttyACM0
+        permissions: rwm
+    ports: ["5000:5000"]
+    mounts: [source,machine-id,device]
+    env:
+      - "POWER_JWT={env.POWER_JWT:}"
+    description: "Watch for code changes and run the unit tests"
