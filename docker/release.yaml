@@ -2,5 +2,5 @@ image=release:
     image: cescoferraro/power
     tags: ["arm-{env.VERSION:}"]
     context: .
-    dockerfile: docker/Dockerfile.release
+    dockerfile: docker/files/Dockerfile.release
     depends: [binary]

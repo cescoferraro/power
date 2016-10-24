@@ -2,13 +2,13 @@ image=binary-builder:
     image: cescoferraro/power
     tags: ["builder"]
     context: .
-    dockerfile: docker/Dockerfile.build
+    dockerfile: docker/files/Dockerfile.build
 
 job=binary:
     use: binary-builder
     artifact: ./dist/bin/
     mounts: [source, dist]
-    command: docker/script/build
+    command: docker/script/build.sh
     env:
       - "POWER_JWT={env.POWER_JWT:}"
       - "VERSION={env.VERSION:}"

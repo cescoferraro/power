@@ -2,7 +2,7 @@ image=watch-builder:
     image: cescoferraro/power
     tags: ["watch"]
     context: .
-    dockerfile: docker/Dockerfile.watch
+    dockerfile: docker/files/Dockerfile.watch
 
 
 job=watch:
