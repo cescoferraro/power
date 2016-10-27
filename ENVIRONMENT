@@ -1,3 +1,0 @@
-export VERSION=0.2.3
-export POWER_JWT=***REMOVED***
-export NGROK_TOKEN=***REMOVED***
