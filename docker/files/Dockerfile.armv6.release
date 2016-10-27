@@ -1,0 +1,6 @@
+FROM resin/rpi-raspbian
+
+
+COPY ./dist/bin/power-armv6-* /usr/bin/power
+COPY ./dist/bin/ngrok /usr/bin/ngrok
+

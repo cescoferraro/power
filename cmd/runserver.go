@@ -10,13 +10,11 @@ import (
 	"github.com/cescoferraro/power/lights"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"strings"
 )
 
 var jwt string
+var version string
 
 var RunserverCmd = &cobra.Command{
 	Use:   "runserver",
@@ -24,6 +22,8 @@ var RunserverCmd = &cobra.Command{
 	Long:  `A loooooooonger description of your command.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		viper.Set("jwt", jwt)
+
+		viper.Set("version", version)
 		util.RunIfVerbose(util.PrintViperConfig)
 		go PING()
 		go RunNgrok(viper.GetString("port"))
@@ -36,13 +36,10 @@ var RunserverCmd = &cobra.Command{
 }
 
 func init() {
-	hardwareUnique, e := ioutil.ReadFile("/var/lib/dbus/machine-id")
-	if e != nil {
-		log.Println(e)
-	}
+	sha:= util.UniqueID()
+	viper.SetDefault("device", sha)
+	viper.SetDefault("url", "http://"+sha+".ngrok.io")
 
-	viper.SetDefault("device", strings.Trim(string(hardwareUnique), "\n"))
-	viper.SetDefault("url", "http://"+strings.Trim(string(hardwareUnique), "\n")+".ngrok.io")
 	flags := util.CommandFlag{
 		util.Flag{
 			Name:        "verbose",
@@ -64,33 +61,33 @@ func init() {
 			Description: "A descriptio about this cool flag",
 			Value:       8},
 		util.Flag{
-			Name:        "serial_port",
+			Name:        "serial-port",
 			Description: "A descriptio about this cool flag",
 			Value:       "/dev/ttyACM0"},
 		util.Flag{
 			Name:        "owner",
 			Short:       "o",
 			Description: "A descriptio about this cool flag",
-			Value:       "francescoaferraro@gmail.com"},
+			Value:       "public"},
+		util.Flag{
+			Name:        "env",
+			Description: "A descriptio about this cool flag",
+			Value:       "prod"},
 		util.Flag{
 			Name:        "api",
 			Description: "A descriptio about this cool flag",
 			Value:       "https://api.cescoferraro.xyz/iot/devices"},
 		util.Flag{
-			Name:        "env",
-			Description: "A descriptio about this cool flag",
-			Value:       "Development"},
-		util.Flag{
 			Name:        "dev-api",
 			Description: "A descriptio about this cool flag",
 			Value:       "http://localhost:9000/iot/devices"},
 		util.Flag{
-			Name:        "ngrok-token",
-			Description: "A descriptio about this cool flag",
-			Value:       "***REMOVED***"},
+			Name:        "ngrok",
+			Description: "A ngrok.io token",
+			Value:       "youneedavalidngroktokenbaby"},
 		util.Flag{
 			Name:        "ping-interval",
-			Description: "The interval  between liveprobe check with the api",
+			Description: "The interval  this app send a ping request to the api. If --env=dev request go to --dev-api",
 			Value:       12},
 	}
 

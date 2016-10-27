@@ -18,7 +18,7 @@ RUN mv ngrok /usr/local/bin/ngrok
 RUN chmod +x /usr/local/bin/ngrok
 
 
-RUN     go get github.com/mitchellh/gox && \
+RUN     go get github.com/franciscocpg/gox && \
         cp /go/bin/gox /usr/bin && \
         rm -rf /go/src/* /go/pkg/* /go/bin/*
 

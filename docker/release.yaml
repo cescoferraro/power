@@ -1,6 +1,33 @@
-image=release:
+image=armv7:
     image: cescoferraro/power
-    tags: ["arm-{env.VERSION:}"]
+    tags: ["armv7-{env.VERSION:}"]
     context: .
-    dockerfile: docker/files/Dockerfile.release
+    dockerfile: docker/files/Dockerfile.armv7.release
     depends: [binary]
+
+image=armv6:
+    image: cescoferraro/power
+    tags: ["armv6-{env.VERSION:}"]
+    context: .
+    dockerfile: docker/files/Dockerfile.armv6.release
+    depends: [binary]
+
+image=amd64:
+    image: cescoferraro/power
+    tags: ["amd-{env.VERSION:}"]
+    context: .
+    dockerfile: docker/files/Dockerfile.amd.release
+    depends: [binary]
+
+
+alias=arm:
+    tasks: ["armv6:push", "armv7:push"]
+    description: "Run all tests"
+
+alias=amd:
+    tasks: ["amd64:push"]
+    description: "Run all tests"
+
+alias=release:
+    tasks: ["arm", "amd"]
+    description: "Run all tests"

@@ -22,12 +22,13 @@ func PING() {
 			for {
 				select {
 				case <-ticker.C:
-
-					switch viper.GetString("ENV") {
-					case "Development":
+					switch viper.GetString("env") {
+					case "dev":
 						go req(viper.GetString("api"))
 						time.Sleep(30 * time.Second)
 						go req(viper.GetString("dev-api"))
+					case "prod":
+						go req(viper.GetString("api"))
 					default:
 						return
 

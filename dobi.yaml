@@ -1,5 +1,20 @@
 meta:
     project: power
     default: all
-    include: ["docker/watch.yaml","docker/mount.yaml", "docker/tools.yaml", "docker/release.yaml", "docker/build.yaml"]
+    include: ["docker/watch.yaml", "docker/tools.yaml", "docker/release.yaml", "docker/build.yaml"]
 
+mount=source:
+    bind: .
+    path: /go/src/github.com/cescoferraro/power
+
+mount=dist:
+    bind: ./dist/bin/
+    path: /go/bin/
+
+mount=device:
+    bind: /dev/ttyACM0
+    path: /dev/ttyACM0
+
+mount=machine-id:
+    bind: /var/lib/dbus/machine-id
+    path: /var/lib/dbus/machine-id

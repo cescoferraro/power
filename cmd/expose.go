@@ -44,7 +44,7 @@ func RunNgrok(port string) {
 		"--log",
 		"stdout",
 		"--authtoken",
-		viper.GetString("ngrok-token"),
+		viper.GetString("ngrok"),
 		"--log-level",
 		"info",
 		port,

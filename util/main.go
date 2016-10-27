@@ -6,6 +6,9 @@ import (
 	"log"
 	"strings"
 	"sort"
+	"net"
+	"crypto/sha1"
+	"encoding/base64"
 )
 
 func LogIfVerbose(logg interface{}) {
@@ -32,4 +35,29 @@ func PrintViperConfig() {
 	}
 	log.Println("*****************************")
 	return
+}
+
+
+func UniqueID() string{
+	var MAC string
+	ifs, _ := net.Interfaces()
+	for _, v := range ifs {
+		if v.Name == "eth0" {
+			MAC = v.HardwareAddr.String()
+		}
+	}
+	log.Println(MAC)
+	hasher := sha1.New()
+
+	hasher.Write([]byte(MAC))
+	sha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+	log.Println(sha)
+	filter := func(r rune) rune {
+		if strings.IndexRune("=", r) < 0 {
+			return r
+		}
+		return -1
+	}
+
+	return  strings.Map(filter, sha)
 }
