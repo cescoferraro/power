@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/cescoferraro/power/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
@@ -15,12 +14,6 @@ var RootCmd = &cobra.Command{
 	Use:   "power",
 	Short: "A brief description of your command",
 	Long:  `This is a http server for the RPi to use on https://iot.cescoferraro.xyz`,
-	Run: func(cmd *cobra.Command, args []string) {
-
-		util.LogIfVerbose("whateverr")
-		util.LogIfVerbose(jwt)
-
-	},
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.

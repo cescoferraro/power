@@ -21,12 +21,12 @@ type SerialDao struct {
 }
 
 func NewSerialDao() (SerialDao, error) {
-	c := &serial.Config{Name: viper.GetString("serial_port"), Baud: 9600}
+	c := &serial.Config{Name: viper.GetString("serial-port"), Baud: 9600}
 	MUTEX.Lock()
 	port, err := serial.OpenPort(c)
 	if err != nil {
 		MUTEX.Unlock()
-		return SerialDao{}, errors.New("Could not fetch Sserial Port")
+		return SerialDao{}, err
 	}
 	return SerialDao{Port: port, Mutex: MUTEX}, nil
 }
@@ -40,8 +40,9 @@ func (serial SerialDao) GetChannel(vars map[string]string) (int, error) {
 		return number, nil
 	}
 	return 0, errors.New("Device does not exist")
-
 }
+
+
 func (serial SerialDao) GetAcion(vars map[string]string) (string, error) {
 	switch {
 	case vars["action"] == "true":

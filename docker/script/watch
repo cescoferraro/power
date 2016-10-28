@@ -4,4 +4,4 @@ exec reflex \
         -r '\.go' -s -- \
         go run \
         -ldflags "-X github.com/cescoferraro/power/cmd.jwt=${POWER_JWT} -X github.com/cescoferraro/power/cmd.version=${VERSION}" \
-        power.go runserver --env=dev --ngrok=${NGROK_TOKEN} --channels=8
+        power.go runserver --env=dev --ngrok=${NGROK_TOKEN} --serial-port=/dev/ttyACM0 --channels=8

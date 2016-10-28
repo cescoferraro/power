@@ -36,7 +36,7 @@ var RunserverCmd = &cobra.Command{
 }
 
 func init() {
-	sha:= util.UniqueID()
+	sha := util.UniqueID()
 	viper.SetDefault("device", sha)
 	viper.SetDefault("url", "http://"+sha+".ngrok.io")
 
@@ -63,7 +63,7 @@ func init() {
 		util.Flag{
 			Name:        "serial-port",
 			Description: "A descriptio about this cool flag",
-			Value:       "/dev/ttyACM0"},
+			Value:       "/dev/ttyS99"},
 		util.Flag{
 			Name:        "owner",
 			Short:       "o",

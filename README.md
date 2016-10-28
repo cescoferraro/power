@@ -34,3 +34,19 @@ shutdown at a specific schedule. Turn it all on in 10 minutes. You house, your r
 |  8-Channel Shield 	|    $22.40	    |     |  Relays         |  $10.94	|   $7.18	|   $4.54	|  $4.13 	|   $3.86	|  $3.69 	|   $3.56	|   $3.46	|
 		
 
+### Installation Dependencies
+
+    curl -O https://raw.githubusercontent.com/hypriot/flash/master/$(uname -s)/flash
+    chmod +x flash
+    sudo mv flash /usr/local/bin/flash
+
+### Installation 
+Insert a sd-card to your computer and type this command, It will prompt you for the sd-card path.
+
+    sudo -E flash -n ANYNAME -s WIFI-NETWORK -p WIFI-PASSWORD https://downloads.hypriot.com/hypriotos-rpi-v1.0.0.img.zip
+
+Then put the sd-card into the Rpi and turn it on. Wait a couple of secconds and log into your RPi. Password if hyprio, you should change this later.
+   
+    ansible-playbook -i ansible/hosts ansible/ansible.yaml --extra-vars "target=ANYNAME.local"
+ 
+    

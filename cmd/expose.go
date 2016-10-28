@@ -27,6 +27,10 @@ func init() {
 			Short:       "p",
 			Description: "A descriptio about this cool flag",
 			Value:       5000},
+		util.Flag{
+			Name:        "ngrok",
+			Description: "A ngrok.io token",
+			Value:       "youneedavalidngroktokenbaby"},
 	}
 	RootCmd.AddCommand(flags.Register(ExposeCmd))
 

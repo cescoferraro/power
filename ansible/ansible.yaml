@@ -1,11 +1,115 @@
 ---
-- hosts: dev
+- hosts: all
+  remote_user: pirate
   become: yes
   become_method: sudo
-  remote_user: root
   tasks:
-  - name: ensure pip is  installed
-    apt: name=python-pip update_cache=yes
-    register: out
-  - debug: var=out.stdout_lines
+
+# Check if instrallation has already been done
+  - name: Check that the setup.conf exists
+    stat: path=/etc/setup.conf
+    register: setup_completed
+
+##Install software
+  - name: install wiringpi
+    apt: name=wiringpi  update_cache=no
+    when: setup_completed.stat.exists == False
+  - name: install pip
+    apt: name=python-pip  update_cache=yes
+    when: setup_completed.stat.exists == False
   - pip: name=platformio
+    when: setup_completed.stat.exists == False
+  - git: repo=https://github.com/cescoferraro/power dest=/home/pirate/power accept_hostkey=yes
+    when: setup_completed.stat.exists == False
+
+
+###Disable Serial
+  - systemd:
+      name: serial-getty@ttyAMA0
+      state: stopped
+      enabled: false
+    when: setup_completed.stat.exists == False
+  - systemd:
+      name: serial-getty@serial0.service
+      state: stopped
+      enabled: false
+    when: setup_completed.stat.exists == False
+  - replace:
+      dest=/boot/cmdline.txt
+      regexp='kgdboc=ttyAMA0,115200'
+      replace=''
+      backup=no
+    when: setup_completed.stat.exists == False
+  - replace:
+      dest=/boot/cmdline.txt
+      regexp='console=ttyAMA0,115200'
+      replace=''
+      backup=no
+    when: setup_completed.stat.exists == False
+  - name: remove the line 'that contains the word ttyAMA0 in any location'
+    lineinfile: dest=/etc/inittab
+                regexp='(?:^|\W)ttyAMA0(?:$|\W)'
+                state=absent
+    when: setup_completed.stat.exists == False
+
+### Creates udev rules
+  - copy: content="KERNEL==\"ttyAMA0\", ACTION==\"add\", SYMLINK+=\"ttyS99\", RUN+=\"/usr/bin/gpio -g mode 14 alt0\", RUN+=\"/usr/bin/gpio -g mode 15 alt0\", GROUP=\"dialout\" " dest=/etc/udev/rules.d/99-PiLeven-ttyAMA0-config.rules
+    when: setup_completed.stat.exists == False
+
+
+### Reboot
+  - name: restart machine
+    when: setup_completed.stat.exists == False
+    shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+    async: 1
+    poll: 0
+    sudo: true
+    ignore_errors: true
+    when: setup_completed.stat.exists == False
+
+  - name: waiting for server to come back
+    local_action: wait_for host=athenas.local state=started delay=3 timeout=2
+    sudo: false
+    when: setup_completed.stat.exists == False
+#
+#
+###Upload code to arduino
+  - command: /usr/bin/gpio -g mode 17 alt3
+    when: setup_completed.stat.exists == False
+  - command: platformio run --target upload --upload-port /dev/ttyS99
+    when: setup_completed.stat.exists == False
+    args:
+      chdir: /home/pirate/power
+  - command: /usr/bin/gpio -g mode 17 input
+  - name: Create a new file
+    file: path=/etc/setup.conf state=touch
+
+
+# Run Docker Container
+  - name: Start a container
+    docker_container:
+      name: myapplication
+      command: power runserver --env=prod --channels=8 --serial_port=/dev/ttyS99 --ngrok=4hZWJ3dGw8u6DRgEVKbX8_eTsjzTE4hFBpZ2QMKH3B
+      image: cescoferraro/power:armv7-0.2.4
+      network_mode: host
+      state: present
+      restart: yes
+      devices:
+       - "/dev/ttyS99:/dev/ttyS99:rwm"
+      ports:
+       - "5000:5000"
+
+
+
+#HypriotOS/armv7: pirate@athenas in ~
+#$ cat /boot/cmdline.txt
+#+dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 cgroup_enable=memory swapaccount=1 elevator=deadline fsck.repair=yes rootwait console=ttyAMA0,115200 kgdboc=ttyAMA0,115200
+
+
+#sed -i '/ttyAMA0/d' /etc/inittab
+#sed -i 's/[a-z]*=ttyAMA0\.\?[^ ]* *//g' /boot/cmdline.txt
+#/bin/systemctl disable serial-getty@ttyAMA0.service # silent if doesn't exist
+#/bin/systemctl disable serial-getty@serial0.service
+#cat > /etc/udev/rules.d/99-PiLeven-ttyAMA0-config.rules <<EOF
+#KERNEL=="ttyAMA0", ACTION=="add", SYMLINK+="ttyS99", RUN+="/usr/bin/gpio -g mode 14 alt0", RUN+="/usr/bin/gpio -g mode 15 alt0", GROUP="dialout"
+#EOF

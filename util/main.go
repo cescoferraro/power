@@ -46,18 +46,16 @@ func UniqueID() string{
 			MAC = v.HardwareAddr.String()
 		}
 	}
-	log.Println(MAC)
 	hasher := sha1.New()
 
 	hasher.Write([]byte(MAC))
 	sha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
-	log.Println(sha)
-	filter := func(r rune) rune {
+	removeEquals := func(r rune) rune {
 		if strings.IndexRune("=", r) < 0 {
 			return r
 		}
 		return -1
 	}
-
-	return  strings.Map(filter, sha)
+	thing := strings.Map(removeEquals, sha)
+	return thing
 }
