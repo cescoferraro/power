@@ -45,8 +45,9 @@ Insert a sd-card to your computer and type this command, It will prompt you for 
 
     sudo -E flash -n ANYNAME -s WIFI-NETWORK -p WIFI-PASSWORD https://downloads.hypriot.com/hypriotos-rpi-v1.0.0.img.zip
 
-Then put the sd-card into the Rpi and turn it on. Wait a couple of secconds and log into your RPi. Password if hyprio, you should change this later.
+Then put the sd-card into the Rpi and turn it on. Wait a couple of secconds and log into your RPi. Password is hypriot, you should change this later.
+THis will take 2-3 minutes. For a more in depth look of whats going on you can check this
    
-    ansible-playbook -i ansible/hosts ansible/ansible.yaml --extra-vars "target=ANYNAME.local"
+    ansible-playbook  -k -i ANYNAME.local,  ansible/ansible.yaml
  
     
