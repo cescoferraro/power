@@ -87,28 +87,15 @@
 # Run Docker Container
   - name: Start a container
     docker_container:
-      name: myapplication
+      name: power
       command: power runserver --channels=8 --ngrok=4hZWJ3dGw8u6DRgEVKbX8_eTsjzTE4hFBpZ2QMKH3B
       image: cescoferraro/power:armv7-0.2.7
       network_mode: host
-      state: present
+      state: started
+      ignore_image: true
+      pull: true
       restart: yes
       devices:
        - "/dev/ttyS99:/dev/ttyS99:rwm"
       ports:
        - "5000:5000"
-
-
-
-#HypriotOS/armv7: pirate@athenas in ~
-#$ cat /boot/cmdline.txt
-#+dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 cgroup_enable=memory swapaccount=1 elevator=deadline fsck.repair=yes rootwait console=ttyAMA0,115200 kgdboc=ttyAMA0,115200
-
-
-#sed -i '/ttyAMA0/d' /etc/inittab
-#sed -i 's/[a-z]*=ttyAMA0\.\?[^ ]* *//g' /boot/cmdline.txt
-#/bin/systemctl disable serial-getty@ttyAMA0.service # silent if doesn't exist
-#/bin/systemctl disable serial-getty@serial0.service
-#cat > /etc/udev/rules.d/99-PiLeven-ttyAMA0-config.rules <<EOF
-#KERNEL=="ttyAMA0", ACTION=="add", SYMLINK+="ttyS99", RUN+="/usr/bin/gpio -g mode 14 alt0", RUN+="/usr/bin/gpio -g mode 15 alt0", GROUP="dialout"
-#EOF
