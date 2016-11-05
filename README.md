@@ -1,14 +1,14 @@
 # power
+
+[![GoDoc](https://godoc.org/github.com/cescoferraro/power/util?status.svg)](https://godoc.org/github.com/cescoferraro/power/util)
+
 Off the shelf, 100% TLS/SSL, Production Grade Cloud Based Iot Automation Solution
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/jvuvyiyVqtc/0.jpg)](https://www.youtube.com/watch?v=jvuvyiyVqtc)
 
-![](http://stream1.gifsoup.com/view2/4045951/homer-light-switch-o.gif)
 
+This project basically automates all steps to a similar setup to the presented on the video above. It aims to provide a DIY Lights Automation system with components you can find online with a really easy installation process. It can provide up to 64 light channels you can control from anywhere in the world. Your data is 100% encrypted. All devices report back to our cloud running  on https://iot.cescoferraro.xyz where you receive REAL-TIME updates of the current state of all channels. You can name them, schedule half of them to shutdown at a specific schedule. Turn it all on in 10 minutes. You house, your rules.
 
-This project aims to provide a DIY Lights Automation system with components you can find online with a really easy installation process. 
-It can provide up to 64 light channels you can control from anywhere in the world. Your data is 100% encrypted. All devices report back to our cloud running 
-on https://iot.cescoferraro.xyz where you receive REAL-TIME updates of the current state of all channels. You can name them, schedule half of them to 
-shutdown at a specific schedule. Turn it all on in 10 minutes. You house, your rules.
 
 
 ### Hardware Requirements
@@ -36,9 +36,8 @@ shutdown at a specific schedule. Turn it all on in 10 minutes. You house, your r
 
 ### Installation Dependencies
 
-    curl -O https://raw.githubusercontent.com/hypriot/flash/master/$(uname -s)/flash
-    chmod +x flash
-    sudo mv flash /usr/local/bin/flash
+    sudo curl -L -o /usr/local/bin/flash https://raw.githubusercontent.com/hypriot/flash/master/$(uname -s)/flash; sudo chmod +x /usr/local/bin/flash
+    sudo apt-get install ansible
 
 ### Installation 
 Insert a sd-card to your computer and type this command, It will prompt you for the sd-card path.
