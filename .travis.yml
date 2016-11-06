@@ -1,15 +1,12 @@
-language: go
-go_import_path: example.org/pkg/foo
+sudo: required
 
-install:
-  - wget "https://github.com/Masterminds/glide/releases/download/0.12.3/glide-0.12.3-linux-amd64.tar.gz"
-  - mkdir -p $HOME/bin
-  - tar -vxz -C $HOME/bin --strip=1 -f glide-0.12.3-linux-amd64.tar.gz
-  - export PATH="$HOME/bin:$PATH"
+services:
+  - docker
 
-go:
-  - 1.7.1
-  - tip
+before_install:
+  - curl -L https://github.com/dnephin/dobi/releases/download/v0.8/dobi-linux > ./dobi
+  - chmod +x ./dobi
+  - ./dobi deps
 
-
-script: go test ./...
+script:
+  - ./dobi test

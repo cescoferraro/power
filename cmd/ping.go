@@ -10,29 +10,19 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
+	"strings"
 )
 
 func PING() {
 	if viper.GetBool("ping") == true {
-		ticker := time.NewTicker(60 * time.Second)
+		ticker := time.NewTicker(20 * time.Second)
 		quit := make(chan struct{})
 		go func() {
 			for {
 				select {
 				case <-ticker.C:
-					switch viper.GetString("env") {
-					case "dev":
-						go req(viper.GetString("api"))
-						time.Sleep(30 * time.Second)
-						go req(viper.GetString("dev-api"))
-					case "prod":
-						go req(viper.GetString("api"))
-					default:
-						return
-
-					}
+					runPing()
 				case <-quit:
 					ticker.Stop()
 					return
@@ -43,6 +33,17 @@ func PING() {
 
 }
 
+
+func runPing(){
+	switch viper.GetString("env") {
+	case "dev":
+		go req(viper.GetString("dev-api"))
+	case "prod":
+		go req(viper.GetString("api"))
+	default:
+		return
+	}
+}
 //StatusResponse is a type
 type Device struct {
 	Hostname string            `json:"hostname"`
@@ -52,23 +53,27 @@ type Device struct {
 	Location map[string]string `json:"location"`
 }
 
-func req(url string) {
-
+func (device Device) addLocation() {
 	location := make(map[string]string, viper.GetInt("channels"))
 
 	for k := range make([]int, viper.GetInt("channels")) {
-		location[strconv.Itoa(k+1)] = "undefined"
+		location[strconv.Itoa(k + 1)] = "undefined"
 	}
+	device.Location = location
 
-	test := Device{
+}
+
+func req(url string) {
+
+	device := Device{
 		Hostname: viper.GetString("device"),
 		Channels: viper.GetInt("channels"),
 		Owner:    viper.GetString("owner"),
 		Alias:    "BRANDNEW",
-		Location: location,
 	}
+	device.addLocation()
 
-	ERRR, _ := json.Marshal(test)
+	ERRR, _ := json.Marshal(device)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(ERRR))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Custom-Header", "myvalue")
@@ -85,7 +90,6 @@ func req(url string) {
 		return
 	}
 	defer resp.Body.Close()
-
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	if strings.Contains(resp.Status, "409") {
