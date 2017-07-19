@@ -9,4 +9,4 @@ before_install:
   - ./dobi deps
 
 script:
-  - ./dobi test
+  - ./dobi binary
